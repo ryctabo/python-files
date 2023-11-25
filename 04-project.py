@@ -18,6 +18,7 @@ import os       # Importamos la biblioteca 'os' para limpiar la pantalla
 import csv      # Importamos la biblioteca 'csv' para trabajar con archivos CSV 
 import shutil   # Importamos la biblioteca 'shutil' para la copia de archivos
 import getpass  # Importamos la biblioteca 'getpass' para ocultar la contraseña de usuario
+import sys
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para limpiar la pantalla
@@ -35,6 +36,138 @@ def print_header():
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╚' + '═'*50 + '╝')
+
+def print_doctor_menu():
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
+    print('║' + '-'*18 + ' DOCTOR MENU ' + '-'*19 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + '(1) » Create clinic history' + ' '*23 + '║')
+    print('║' + '(2) » Consult clinic history' + ' '*22 + '║')
+    print('║' + '(3) » Update clinic history' + ' '*23 + '║')
+    print('║' + '(4) » Delete clinic history' + ' '*23 + '║')
+    print('║' + '(5) » Exit' + ' '*40 + '║')
+    print('╚' + '═'*50 + '╝')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def print_assistant_menu():
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║ (1) » Create new patient record                   ║
+║ (2) » Consult one patient                         ║
+║ (3) » Consult all patients                        ║
+║ (4) » Update patient                              ║
+║ (5) » Delete patient                              ║
+║ (6) » Logout                                      ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+
+def assistant_menu():
+    print_assistant_menu()
+    menu_management({
+        "1": action_create_patient,
+        "2": action_consult_patient, 
+        "3": action_consult_all_patient,
+        "4": action_update_patient,
+        "5": action_delete_patient,
+        "6": log_out
+    })
+
+def action_create_patient():
+    print('action_create_patient')
+
+def action_consult_patient():
+    print('action_consult_patient')
+
+def action_consult_all_patient():
+    print('action_consult_all_patient')
+
+def action_update_patient():
+    print('action_update_patient')
+
+def action_delete_patient():
+    print('action_delete_patient')
+
+
+
+def bad_option():
+    print('Invalid option, please, select a valid option...')
+
+def menu_management(menu):
+    option = input('Select an option: ')
+    action = menu.get(option, bad_option)
+
+    if action == None:
+        return 'exit'
+
+    clean_console()
+    action()
+    input('Enter the continue...')
+
+    return
+
+def bye():
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            Bye! :)                                ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+    input()
+    sys.exit()
+
+
+def print_admin_menu():
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║ (1) » Create a new user                           ║
+║ (2) » Consult an user by username                 ║
+║ (3) » Consult all users                           ║
+║ (4) » Update user data                            ║
+║ (5) » Delete an user by username                  ║
+║ (6) » Backup                                      ║
+║ (7) » Logout                                      ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+
+def admin_menu():
+    print_admin_menu()
+    menu_management({
+        "1": action_create_user,
+        "2": action_find_user,
+        "3": find_all_users,
+        "4": update_user,
+        "5": delete_users_data,
+        "6": make_backup,
+        "7": log_out
+    })
 
 
 
@@ -54,9 +187,6 @@ def save_data_to_csv(filename, headers, data_list):
             writer = csv.DictWriter(csv_file, headers)
             writer.writeheader()
             writer.writerows(data_list)
-
-        print(' Data has been saved successfully!')
-        print('═'*52)
 
     except Exception as e:
         print(' An error occurred while saving information to the file')
@@ -105,7 +235,7 @@ def load_users():
                 'role': 'admin'
             },
             {
-                'username': 'assistance',
+                'username': 'assistant',
                 'password': '1234',
                 'role': 'assistant'
             },
@@ -131,6 +261,36 @@ def exists_user(username):
         if user['username'] == username:
             return True
     return False
+
+def action_create_user():
+    print_create_user_header()
+    create_user()
+    print('═'*52)
+
+def print_create_user_header():
+    print_header()        # We request our header
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + '→ Enter a username to continue.' + ' '*19 + '║')
+    print('║' + ' '*50 + '║')
+    print('║' + '→ The password can be any combination of letters, ' + '║')
+    print('║' + '  numbers, and symbols. Use minimun 8 characters. ' + '║')
+    print('║' + ' '*50 + '║')
+    print('║' + '→ Assign a user role (admin, assistant, doc).' + ' '*5 +'║')
+    print('╚' + '═'*50 + '╝')
+
+def create_user():
+    new_user = {}
+    # Creamos los campos con los que el administrador podrá crear nuevos usuarios
+    new_user['username'] = input_username()
+    new_user['password'] = input_password()
+    new_user['role'] = input_role()
+
+    # Insertamos los nuevos usuarios en la lista
+    user_list.append(new_user)
+    save_data_to_csv(user_filename, user_headers, user_list)
+    print(' The user has been saved successfully!')
 
 def input_username():
     while True:
@@ -166,41 +326,11 @@ def input_role():
             print(' Valid roles: ', roles_allowed)
     return role
 
-def create_user():
-    new_user = {}
-    # Creamos los campos con los que el administrador podrá crear nuevos usuarios
-    new_user['username'] = input_username()
-    new_user['password'] = input_password()
-    new_user['role'] = input_role()
-
-    print('═'*52)
-
-    # Insertamos los nuevos usuarios en la lista
-    user_list.append(new_user)
-    save_data_to_csv(user_filename, user_headers, user_list)
-
 def find_user(username):
     for user in user_list:
         if user['username'] == username:
             return user
     return None
-
-def print_create_user_header():
-    print_header()        # We request our header
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '→ Enter a username to continue.' + ' '*19 + '║')
-    print('║' + ' '*50 + '║')
-    print('║' + '→ The password can be any combination of letters, ' + '║')
-    print('║' + '  numbers, and symbols. Use minimun 8 characters. ' + '║')
-    print('║' + ' '*50 + '║')
-    print('║' + '→ Assign a user role (admin, assistant, doc).' + ' '*5 +'║')
-    print('╚' + '═'*50 + '╝')
-
-def register_a_new_user():
-    print_create_user_header()
-    create_user()
 
 #Definimos una función para consultar los detos de los usuarios
 def print_consult_data():
@@ -222,7 +352,7 @@ def print_find_user():
     print('╚' + '═'*50 + '╝')
 
 # Definimos una función para consultar los datos de un solo usuario
-def find_user_by_username():
+def action_find_user():
     print_find_user()
     username = input(' Enter the username to consult: ')
     user = find_user(username)
@@ -231,6 +361,8 @@ def find_user_by_username():
         print(f' User with username {username} was not found.')
     else:
         print(user)
+
+    print('═'*52)
 
 # Definimos una funcion para consultar todos los usuarios
 def find_all_users():
@@ -244,7 +376,8 @@ def find_all_users():
 
     for user in user_list:
         print(user)
-    print()
+
+    print('═'*52)
 
 def print_delete_user_menu():
     print('╔' + '═'*50 + '╗')
@@ -356,6 +489,17 @@ def make_backup():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 # -----------------------------------------------------------------------------
 # BEGIN: PATIENT MODULE
 # Creamos una lista vacia para almacenar los datos
@@ -421,32 +565,11 @@ if len(patient_list) == 0:
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para el menu de administrador
-def admin_menu():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('║' + '-'*19 + ' ADMIN MENU ' + '-'*19 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create a new user' + ' '*27 + '║')
-    print('║' + '(2) » Consult user data' + ' '*27 + '║')
-    print('║' + '(3) » Update user data' + ' '*28 + '║')
-    print('║' + '(4) » Delete users' + ' '*32 + '║')
-    print('║' + '(5) » Data backup'  + ' '*33 + '║')
-    print('║' + '(6) » Exit' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos la funcion del menu de asistente
-def assistant_menu():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('║' + '-'*17 + ' ASSISTANT MENU ' + '-'*17 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create new patient record' + ' '*19 + '║')
-    print('║' + '(2) » Consult patient data' + ' '*24 + '║')
-    print('║' + '(3) » Update patient data' + ' '*25 + '║')
-    print('║' + '(4) » Delete patient data' + ' '*25 + '║')
-    print('║' + '(5) » Exit' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+
 
 def add_patient_data_menu():
     print_header()
@@ -690,17 +813,7 @@ def delete_patient_data():
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos la funcion del menu del doctor
-def doctor_menu():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('║' + '-'*18 + ' DOCTOR MENU ' + '-'*19 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create clinic history' + ' '*23 + '║')
-    print('║' + '(2) » Consult clinic history' + ' '*22 + '║')
-    print('║' + '(3) » Update clinic history' + ' '*23 + '║')
-    print('║' + '(4) » Delete clinic history' + ' '*23 + '║')
-    print('║' + '(5) » Exit' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+
 
 history_list = []
 
@@ -794,7 +907,7 @@ def delete_history():
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para salir, esta funcion se va a encargar de dejar al usuario en el 'login'
-def exit():
+def is_exist():
     # Solicitamos la funcion de limpiar pantalla
     clean_console()
     # Solicitamos la funcion de login para que nos deje en el 'login' y poder ingresar nuevamente
@@ -839,14 +952,14 @@ def menu(role):
     while True:
         # Si 'role' es igual a 'admin' nos mostrara el menu del administrador (Kameron)
         if role == 'admin':
-            admin_menu()
+            print_admin_menu()
             # Creamos una opcion para que el administrador elija lo que desea hacer en su menu
             admin_option = input(' Select an option: ')
 
             # La opcion '1' le permite al dministrador crear nuevos usuarios, contraseñas y roles
             if admin_option == '1':
                 clean_console()
-                register_a_new_user()
+                action_create_user()
 
             # La opcion '2' le permite al administrador consultar los datos de los usuarios
             elif admin_option == '2':
@@ -857,7 +970,7 @@ def menu(role):
 
                 if view_users_option == '1':
                     clean_console()
-                    find_user_by_username()
+                    action_find_user()
                     input(' '*8 + 'Press enter to return to the menu: ')
                     clean_console()
 
@@ -937,7 +1050,7 @@ def menu(role):
 #_________________________________________________________________________________________________________________________________________________________________________________#
         # Si 'role' es igual a 'assitant' nos mostrara el menu del asistente (Kevin)
         elif role == 'assistant':
-            assistant_menu()
+            print_assistant_menu()
 
             # Creamos una opcion para que el asistente elija lo que desea hacer en su menu
             assistant_option = input(' Select an option: ')
@@ -1045,7 +1158,7 @@ def menu(role):
 #_________________________________________________________________________________________________________________________________________________________________________________#
         # Si 'role' es igual a 'doc' nos mostrara el menu del doctor o medico (Samuel)
         elif role == 'doc':
-            doctor_menu()
+            print_doctor_menu()
 
             # Creamos una opcion para que el doctor elija lo que desea hacer en su menu
             doc_option = input(' Select an option: ')
@@ -1131,8 +1244,91 @@ def menu(role):
             print()
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
+# if __name__ == '__main__':
+#     # user_role = login()
+#     user_role = 'admin'
+#     if user_role:
+#         menu(user_role)
+
+# --------------------------------------------------------------------------------
+# BEGIN: AUTHENTICATION MODULE
+
+auth_info = {}
+
+def print_login_header():
+    print_header()
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*22 + 'LOGIN' + ' '*23 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' +  ' '*20 + 'Hello again!' + ' '*18 + '║')
+    print('║' + ' '*5 + 'Please enter the credentials to continue' + ' '*5 + '║')
+    print('╚' + '═'*50 + '╝')
+
+def log_in():
+    username = input('Username: ')
+    user = find_user(username)
+
+    if user == None:
+        print(' The user is not identified!')
+        return
+
+    password = getpass.getpass('Password: ')
+
+    if user['password'] == password:
+        auth_info['user'] = user
+        print('Login successfully!')
+    else:
+        print('The password is wrong!')
+
+def log_out():
+    auth_info['user'] = None
+
+# END: AUTHENTICATION MODULE
+# --------------------------------------------------------------------------------
+
+
+
+
+def print_main_menu():
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║ (1) » Login                                       ║
+║ (2) » Exit                                        ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+
+def main_menu():
+    print_main_menu()
+    options = {
+        "1": log_in,
+        "2": bye
+    }
+    option = input('Select an option: ')
+    print()
+
+    action = options.get(option)
+    action()
+
+def execute_menu():
+    menus = {
+        "admin": admin_menu,
+        "assistant": assistant_menu,
+        "doc": bye,
+    }
+    user_authenticated = auth_info['user']
+    menu = menus.get(user_authenticated['role'])
+
+    clean_console()
+    menu()
+
 if __name__ == '__main__':
-    # user_role = login()
-    user_role = 'admin'
-    if user_role:
-        menu(user_role)
+    while True:
+        if auth_info.get('user') != None:
+            execute_menu()
+        else:
+            main_menu()
+
