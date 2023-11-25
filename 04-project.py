@@ -14,6 +14,7 @@
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Importamos todas las bibliotecas que vamos a utilizar en nuestro codigo
+
 import os       # Importamos la biblioteca 'os' para limpiar la pantalla
 import csv      # Importamos la biblioteca 'csv' para trabajar con archivos CSV 
 import shutil   # Importamos la biblioteca 'shutil' para la copia de archivos
@@ -21,6 +22,7 @@ import getpass  # Importamos la biblioteca 'getpass' para ocultar la contraseña
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para limpiar la pantalla
+
 def clean_console():
     if os.name == 'nt':
         os.system('cls')    # Usamos 'os.system()' para ejecutar el comando 'cls', que borra la pantalla en sistemas Windows
@@ -41,18 +43,18 @@ def header():
 # Creamos un diccionario con los nombres de usuario, contraseña y el rol que van a desempeñar estos usuarios
 users = [
     {
-        'username': 'admin',
-        'password': '1234',
+        'username': 'kameronjoly',
+        'password': '1128063099',
         'role': 'admin'
     },
     {
-        'username': 'assistant1',
-        'password': '1234',
+        'username': 'kevinjesus',
+        'password': '1002191923',
         'role': 'assistant'
     },
     {
-        'username': 'doc1',
-        'password': '1234',
+        'username': 'samueljesus',
+        'password': '1043647631',
         'role': 'doc'
     }
 ]
@@ -85,6 +87,7 @@ new_users = {}  # We create a dictionary for new users
 
 # Definimos la función para crear nuevos usuarios
 def add_users_data():
+
     header()        # We request our header
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
@@ -118,26 +121,23 @@ def add_users_data():
     save_users_to_csv()
 
 # Definimos una función para guardar usuarios en un archivo CSV
+# Modifica la función save_users_to_csv() de la siguiente manera:
 def save_users_to_csv():
     try:
-        filename_users = 'user-data.csv'                               # Definimos el nombre de nuestro archivo CSV
-        with open(filename_users, 'a', newline='') as user_file_csv:   # Abrimos el archivo en modo 'append' y definimos su alias
-            fieldnames = ['username', 'password', 'role']              # Definimos nuestro encabezado
-            writer = csv.DictWriter(user_file_csv, fieldnames)         # Creamos un escritor para nuestro archivo y encabezado
+        filename_users = 'user-data.csv'
+        with open(filename_users, 'w', newline='') as user_file_csv:  # Cambia 'a' a 'w'
+            fieldnames = ['username', 'password', 'role']
+            writer = csv.DictWriter(user_file_csv, fieldnames)
 
-            # Si el archivo está vacío, se escribirá el encabezado
-            if user_file_csv.tell() == 0:
-                writer.writeheader()
-            writer.writerow(new_users)
+            writer.writeheader()
+            writer.writerows(users)  # Utiliza writerows para escribir la lista completa de usuarios
 
-        # Mensaje en caso de que los datos estén almacenados correctamente
-        print(' '*3 + f'User data saved to {filename_users} successfully')
+        print(f'User data saved to {filename_users} successfully')
         print('═'*52)
 
-        # Mensaje en caso de que los datos no se almacenen correctamente
     except Exception as e:
-        print(f' Erorr {e}')
-        print(' Unable to save user data to CSV')
+        print(f'Error: {e}')
+        print('Unable to save user data to CSV')
         print('═'*52)
 
 #Definimos una función para consultar los detos de los usuarios
@@ -217,63 +217,37 @@ def view_all_users():
         print('\t'*9 + ' '*5 + ' An error ocurred while reading information form the file')
         print('═'*52)
 
-# Definimos la función para modificar los datos del usuario
-def update_users_data():
+# Definimos la función para cambiar los credenciales del usuario
+def change_credentials():
+    clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Update user data' + ' '*28 + '║')
-    print('║' + '(2) » Back' + ' '*40 + '║')
+    print('║' + ' '*14 + '( Change Credentials )' + ' '*14 + '║')
     print('╚' + '═'*50 + '╝')
-    update_option = input(' Select an option: ')
 
-    if update_option == '1':
-        change_username()
-        print(' Enter username to update')
-        update_username = input(' » ')
+    username = input(' Enter your current username: ')
+    password = getpass.getpass(' Enter your current password: ')
 
-        for user in users:
-            if user['username'] == update_username:
-                print(f' Update data for user {update_username}')
-                
-                new_username = input(' New username: ')
-                new_password = input(' New password: ')
+    user_found = False
+    for user in users:
+        if user['username'] == username and user['password'] == password:
+            user_found = True
 
-                user['username'] = new_username
-                user['password'] = new_password
+            new_username = input(' Enter your new username: ')
+            new_password = getpass.getpass(' Enter your new password: ')
 
-                print(' User data update successfully')
-                print('═'*52)
-                save_users_to_csv()
-                return
-        
-        print(' User not found')
+            user['username'] = new_username
+            user['password'] = new_password
+
+            print(' Your credentials have been updated successfully')
+            print('═'*52)
+            save_users_to_csv()
+            break
+
+    if not user_found:
+        print(' Incorrect username or password. Please try again')
         print('═'*52)
-
-    elif update_option == '2':
-        clean_console()
-
-    else:
-        clean_console()
-        print(' '*18 + 'Invalid option')
-        print(' '*8 + 'Please select a valid option (1 or 3)')
-        print()
-
-# Definimos una funcion para cambiar el nombre de usuario
-def change_username():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + ' '*15  + '  ( Update users ) ' + ' '*15 + ' ║')
-    print('╚' + '═'*50 + '╝')
-
-# Definimos una funcion para cambiar la contraseña de usuario
-def change_password():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + ' '*13  + '  ( Change password ) ' + ' '*14 + ' ║')
-    print('╚' + '═'*50 + '╝')
 
 def delete_user_menu():
     print('╔' + '═'*50 + '╗')
@@ -283,7 +257,39 @@ def delete_user_menu():
     print('║' + '(2) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
 
-# Definimos una funcion para eliminar a los usuarios
+# Definimos una función para eliminar usuarios del archivo CSV
+def delete_user_from_csv(username):
+    try:
+        filename_users = 'user-data.csv'
+        temp_filename = 'temp-user-data.csv'
+
+        with open(filename_users, 'r', newline='') as user_file_csv, \
+             open(temp_filename, 'w', newline='') as temp_file_csv:
+
+            fieldnames = ['username', 'password', 'role']
+            reader = csv.DictReader(user_file_csv)
+            writer = csv.DictWriter(temp_file_csv, fieldnames)
+
+            # Escribimos el encabezado en el nuevo archivo
+            writer.writeheader()
+
+            # Copiamos todos los usuarios excepto el que queremos eliminar al nuevo archivo
+            for row in reader:
+                if row['username'] != username:
+                    writer.writerow(row)
+
+        # Reemplazamos el archivo original con el nuevo archivo
+        shutil.move(temp_filename, filename_users)
+
+        print(f' User {username} deleted successfully from {filename_users}')
+        print('═'*52)
+
+    except Exception as e:
+        print(f' Error {e}')
+        print(' Unable to delete user from CSV')
+        print('═'*52)
+
+# Modificamos la función delete_users_data para usar la función delete_user_from_csv
 def delete_users_data():
     header()
     print('╔' + '═'*50 + '╗')
@@ -291,18 +297,18 @@ def delete_users_data():
     print('╚' + '═'*50 + '╝')
     print(' Enter username to delete')
     username_to_delete = input(' » ')
+
+    user_found = False
     for user in users:
         if user['username'] == username_to_delete:
             users.remove(user)
-            print(f' Username {username_to_delete} delete successfully')
-            print('═'*52)
-
-            # Actualizamos nuestra lista de usuarios
-            save_users_to_csv()
+            user_found = True
             break
-        
-        else:
-            print(f' User {username_to_delete} not found')
+
+    if user_found:
+        delete_user_from_csv(username_to_delete)
+    else:
+        print(f' User {username_to_delete} not found')
         print('═'*52)
 
 # Definimos una funcion para el menu de hacer una copia de seguridad de datos
@@ -421,7 +427,6 @@ def save_data_to_csv():
 
             for data in data_list:
                 writer.writerow(data)
-                break
 
         # Cuando el archivo se guarde correctamente nos mostrara este mensaje:
         print(f'\t'*10 +' The patient has been saved perfectly in the file')
@@ -528,6 +533,59 @@ def update_patient_data_menu():
     print('║' + '(2) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
 
+# Función para actualizar la información de un paciente
+def update_patient_data():
+    clean_console()
+    header()
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + ' '*11  + '   ( Update patient data ) ' + ' '*11 + ' ║')
+    print('╚' + '═'*50 + '╝')
+
+    patient_id = input(' '*6 + ' Enter patient ID to update: ')
+    
+    try:
+        filename = 'patient-data.csv'
+        with open(filename, 'r', newline='') as csv_file:
+            reader = csv.DictReader(csv_file)
+            patients = list(reader)
+
+            for i, row in enumerate(patients):
+                if row['Identification'] == patient_id:
+                    print()
+                    print('╔' + '═'*50 + '╗')
+                    print(' '*7 + f'Updating patient with ID {patient_id}' + ' '*7)
+                    print('╚' + '═'*50 + '╝')
+                    
+                    for key, value in row.items():
+                        print(f'\t\t{key}: {value}')
+                    
+                    # Solicitar al usuario los nuevos datos
+                    print('\n\t\tEnter new data:')
+                    for key in row.keys():
+                        new_value = input(f'\t\t{key}: ')
+                        patients[i][key] = new_value
+
+                    # Guardar los cambios en el archivo CSV
+                    with open(filename, 'w', newline='') as csv_file_write:
+                        writer = csv.DictWriter(csv_file_write, fieldnames=reader.fieldnames)
+                        writer.writeheader()
+                        writer.writerows(patients)
+
+                    print(' Patient data updated successfully')
+                    print('═'*52)
+                    break
+
+            else:
+                print('╔' + '═'*50 + '╗')
+                print(' '*7 + f'Patient with ID {patient_id} not found' + ' '*7 )  # Mensaje en caso de que el paciente no se encuentre
+                print('╚' + '═'*50 + '╝')  
+
+    except Exception as e:
+        print('\t'*9 + ' '*5 + f' An error occurred while updating patient information: {e}')
+        print('═'*52)
+
 # Función para cargar datos desde el archivo CSV al inicio del programa
 def load_data_from_csv():
     try:
@@ -540,13 +598,6 @@ def load_data_from_csv():
         # Si el archivo no existe, se crea vacío
         pass
 
-# Función para buscar un paciente por ID
-def find_patient_by_id(patient_id):
-    for patient in data_list:
-        if patient['Identification'].strip() == patient_id.strip():
-            return patient
-    return None
-
 # Función para actualizar la información de un paciente
 def update_patient_data():
     print('╔' + '═'*50 + '╗')
@@ -554,70 +605,6 @@ def update_patient_data():
     print('╠' + '═'*50 + '╣')
     print('║' + ' '*11  + '   ( Update patient data ) ' + ' '*11 + ' ║')
     print('╚' + '═'*50 + '╝')
-
-    # Solicitar al usuario el ID del paciente a actualizar
-    patient_id = input(' '*6 + 'Enter patient ID to update: ')
-    patient = find_patient_by_id(patient_id)
-
-    if patient:
-        # Mostrar la información actual del paciente
-        clean_console()
-        print('╔' + '═'*50 + '╗')
-        print('║' + ' '*12 + 'Current Patient Information' + ' '*11 + '║')
-        print('╚' + '═'*50 + '╝')
-
-        display_patient_info(patient)
-
-        # Permitir al usuario actualizar la información
-        print('╔' + '═'*50 + '╗')
-        print('║' + ' '*6 + 'Enter the new information to continue ' + ' '*6 + '║')
-        print('╠' + '═'*50 + '╣')
-        print('║' + ' '*6 + 'Press Enter to keep the current value ' + ' '*6 + '║')
-        print('║' + ' '*10 + 'Otherwise write the new value ' + ' '*10 + '║')
-        print('╚' + '═'*50 + '╝')
-        name = input(' » Names: ')
-        lastname = input(' » Surnames: ')
-        age = input(' » Age: ')
-        gender = input(' » Gender: ')
-        address = input(' » Address: ')
-        phone = input(' » Phone number: ')
-        health_coverage = input(' » Health coverage: ')
-        print('═'*52)
-
-        # Actualizar la información del paciente
-        if name:
-            patient['Names'] = name
-        if lastname:
-            patient['Surnames'] = lastname
-        if age:
-            patient['Age'] = age
-        if gender:
-            patient['Gender'] = gender
-        if address:
-            patient['Address'] = address
-        if phone:
-            patient['Phone number'] = phone
-        if health_coverage:
-            patient['Health coverage'] = health_coverage
-
-        # Guardar los cambios en el archivo CSV
-        save_data_to_csv()
-        print('╔' + '═'*50 + '╗')
-        print(' '*5 + ' Patient information updated successfully' + ' '*5 )
-        print('╚' + '═'*50 + '╝')
-    else:
-        print('\n')
-        print('╔' + '═'*50 + '╗')
-        print(' '*7 + f'Patient with ID: {patient_id} not found' + ' '*7)
-        print('╚' + '═'*50 + '╝')
-
-# Función para mostrar la información de un paciente
-def display_patient_info(patient):
-    for key, value in patient.items():
-        print(f' » {key}: {value}')
-
-# Cargar datos desde el archivo CSV al inicio del programa
-load_data_from_csv()
 
 def delete_save_data_to_csv():
     try:
@@ -659,36 +646,6 @@ def delete_patient_data():
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + '  ( Delete patient data ) ' + ' '*12 + '║')
     print('╚' + '═'*50 + '╝')
-
-    # Solicitar al usuario el ID del paciente a eliminar
-    patient_id = input(' » Enter patient ID to delete: ')
-    patient = find_patient_by_id(patient_id)
-
-    if patient:
-        # Mostrar la información actual del paciente antes de eliminar
-        clean_console()
-        print('╔' + '═'*50 + '╗')
-        print('║' + ' '*11 + 'Current Patient Information ' + ' '*11 + '║')
-        print('╚' + '═'*50 + '╝')
-
-        display_patient_info(patient)
-        print('═'*52 )
-
-        # Confirmar la eliminación
-        confirmation = input(' Are you sure to delete the data? (yes/no): ').lower()
-
-        if confirmation == 'yes':
-            # Eliminar el paciente de la lista
-            data_list.remove(patient)
-
-            # Guardar los cambios en el archivo CSV
-            delete_save_data_to_csv()
-        else:
-            print(' Deletion cancelled')
-    else:
-        print('╔' + '═'*50 + '╗')
-        print(' '*7 + f'Patient with ID: {patient_id} not found' + ' '*7)
-        print('╚' + '═'*50 + '╝')
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos la funcion del menu del doctor
@@ -919,7 +876,9 @@ def menu(role):
             # La opcion '3' le permite al administrador actualizar los datos de los usuarios
             elif admin_option == '3':
                 clean_console()
-                update_users_data()
+                change_credentials()
+                input(' '*8 + 'Press enter to return to the menu: ')
+                clean_console()
 
             # La opcion '4' le permite al administrador eliminar los datos de los usuarios
             elif admin_option == '4':
