@@ -19,6 +19,7 @@ import csv      # Importamos la biblioteca 'csv' para trabajar con archivos CSV
 import shutil   # Importamos la biblioteca 'shutil' para la copia de archivos
 import getpass  # Importamos la biblioteca 'getpass' para ocultar la contraseña de usuario
 import sys
+from datetime import datetime
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para limpiar la pantalla
@@ -33,21 +34,82 @@ clean_console()
 
 # Definimos una función para decorar el programa con caracteres ascii, para ello usaremos el siguiente encabezado: 'MEDICAL RECORDS MANAGEMENT'
 def print_header():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('╚' + '═'*50 + '╝')
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            MEDICAL RECORDS MANAGEMENT             ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
 
-def print_doctor_menu():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('║' + '-'*18 + ' DOCTOR MENU ' + '-'*19 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create clinic history' + ' '*23 + '║')
-    print('║' + '(2) » Consult clinic history' + ' '*22 + '║')
-    print('║' + '(3) » Update clinic history' + ' '*23 + '║')
-    print('║' + '(4) » Delete clinic history' + ' '*23 + '║')
-    print('║' + '(5) » Exit' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+def bad_option():
+    print('Invalid option, please, select a valid option...')
+
+def menu_management(menu):
+    option = input('Select an option: ')
+    action = menu.get(option, bad_option)
+    clean_console()
+    action()
+
+def bye():
+    print(
+'''
+╔═══════════════════════════════════════════════════╗
+║            Bye! :)                                ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+    input()
+    sys.exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def print_doc_menu():
+    print(
+f'''
+Hi, {auth_info['user']['username']} !
+╔═══════════════════════════════════════════════════╗
+║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║                   DOCTOR MENU                     ║
+╠═══════════════════════════════════════════════════╣
+║ (1) » Create clinic history                       ║
+║ (2) » Consult clinic history                      ║
+║ (3) » Consult all clinic history                  ║
+║ (4) » Update clinic history                       ║
+║ (5) » Delete clinic history                       ║
+║ (6) » Logout                                      ║
+╚═══════════════════════════════════════════════════╝
+'''
+    )
+
+def doc_menu():
+    print_doc_menu()
+    menu_management({
+        "1": action_create_clinic_history,
+        "2": action_consult_clinic_history, 
+        "3": action_consult_all_clinic_history,
+        "4": action_update_clinic_history,
+        "5": action_delete_clinic_history,
+        "6": log_out
+    })
 
 
 
@@ -70,9 +132,12 @@ def print_doctor_menu():
 
 def print_assistant_menu():
     print(
-'''
+f'''
+Hi, {auth_info['user']['username']} !
 ╔═══════════════════════════════════════════════════╗
 ║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║                  ASSISTANT MENU                   ║
 ╠═══════════════════════════════════════════════════╣
 ║ (1) » Create new patient record                   ║
 ║ (2) » Consult one patient                         ║
@@ -95,56 +160,31 @@ def assistant_menu():
         "6": log_out
     })
 
-def action_create_patient():
-    print('action_create_patient')
-
-def action_consult_patient():
-    print('action_consult_patient')
-
-def action_consult_all_patient():
-    print('action_consult_all_patient')
-
-def action_update_patient():
-    print('action_update_patient')
-
-def action_delete_patient():
-    print('action_delete_patient')
 
 
 
-def bad_option():
-    print('Invalid option, please, select a valid option...')
 
-def menu_management(menu):
-    option = input('Select an option: ')
-    action = menu.get(option, bad_option)
 
-    if action == None:
-        return 'exit'
 
-    clean_console()
-    action()
-    input('Enter the continue...')
 
-    return
 
-def bye():
-    print(
-'''
-╔═══════════════════════════════════════════════════╗
-║            Bye! :)                                ║
-╚═══════════════════════════════════════════════════╝
-'''
-    )
-    input()
-    sys.exit()
+
+
+
+
+
+
+
 
 
 def print_admin_menu():
     print(
-'''
+f'''
+Hi, {auth_info['user']['username']} !
 ╔═══════════════════════════════════════════════════╗
 ║            MEDICAL RECORDS MANAGEMENT             ║
+╠═══════════════════════════════════════════════════╣
+║                ADMINISTRATOR MENU                 ║
 ╠═══════════════════════════════════════════════════╣
 ║ (1) » Create a new user                           ║
 ║ (2) » Consult an user by username                 ║
@@ -162,12 +202,19 @@ def admin_menu():
     menu_management({
         "1": action_create_user,
         "2": action_find_user,
-        "3": find_all_users,
-        "4": update_user,
-        "5": delete_users_data,
-        "6": make_backup,
+        "3": action_find_all_users,
+        "4": action_update_user,
+        "5": action_delete_user,
+        "6": action_backup,
         "7": log_out
     })
+
+
+
+
+
+
+
 
 
 
@@ -365,7 +412,7 @@ def action_find_user():
     print('═'*52)
 
 # Definimos una funcion para consultar todos los usuarios
-def find_all_users():
+def action_find_all_users():
     clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
@@ -388,7 +435,7 @@ def print_delete_user_menu():
     print('╚' + '═'*50 + '╝')
 
 # Modificamos la función delete_users_data para usar la función delete_user_from_csv
-def delete_users_data():
+def action_delete_user():
     print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*15  + '  ( Delete users ) ' + ' '*15 + ' ║')
@@ -407,7 +454,7 @@ def delete_users_data():
         print(' User has been deleted successfuly!')
 
 # Definimos la función para cambiar los credenciales del usuario
-def update_user():
+def action_update_user():
     clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
@@ -441,33 +488,30 @@ def print_backup_menu():
     print('║' + '(2) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
 
+def action_backup():
+    print_header()
+    make_backup(user_filename)
+    make_backup(patient_filename)
+    make_backup(history_filename)
+    print('All backups are finished successfully!')
+    input('Enter to continue...')
+
 # Definimos una funcion para crear una copia de seguridad
-def make_backup():
+def make_backup(filename):
     try:
-        print('╔' + '═'*50 + '╗')
-        print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-        print('╠' + '═'*50 + '╣')
-        print('║' + ' '*16  + ' ( backup ) ' + ' '*16 + ' ║')
-        print('╚' + '═'*50 + '╝')
-
-        print(' Enter the source path of the CSV file')
-        source_path = input(' » ')
-        print('═'*52)
-        print(' Enter the backup path for the CSV file')
-        backup_route = input(' » ')
-        print('═'*52)
-
-        shutil.copy2(source_path, backup_route)
-        print(f'Successfully backed up {source_path} to {backup_route}')
+        current_date = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        filename_without_extension = os.path.splitext(filename)[0]
+        new_filename = f'{filename_without_extension}_{current_date}.csv'
+        shutil.copy(filename, new_filename)
 
     except FileNotFoundError:
         print(' Error: The file was not found')
-        print(f' {source_path}')
+        print(f' {filename}')
         print('═'*52)
 
     except PermissionError:
         print(' Error: Permision denied when trying to copy')
-        print(f' {source_path}')
+        print(f' {filename}')
         print('═'*52)
 
     except Exception as e:
@@ -510,6 +554,21 @@ patient_list = load_data_from_csv(patient_filename)
 if len(patient_list) == 0:
     save_data_to_csv(patient_filename, patient_headers, patient_list)
 
+def action_create_patient():
+    print('action_create_patient')
+
+def action_consult_patient():
+    print('action_consult_patient')
+
+def action_consult_all_patient():
+    print('action_consult_all_patient')
+
+def action_update_patient():
+    print('action_update_patient')
+
+def action_delete_patient():
+    print('action_delete_patient')
+
 # END: PATIENT MODULE
 # -----------------------------------------------------------------------------
 
@@ -539,6 +598,22 @@ history_list = load_data_from_csv(history_filename)
 
 if len(patient_list) == 0:
     save_data_to_csv(history_filename, history_headers, history_list)
+
+
+def action_create_clinic_history():
+    print('action_create_clinic_history')
+
+def action_consult_clinic_history():
+    print('action_consult_clinic_history')
+
+def action_consult_all_clinic_history():
+    print('action_consult_all_clinic_history')
+
+def action_update_clinic_history():
+    print('action_update_clinic_history')
+
+def action_delete_clinic_history():
+    print('action_delete_clinic_history')
 
 # END: HISTORY MODULE
 # -----------------------------------------------------------------------------
@@ -905,350 +980,21 @@ def delete_history():
     print('║' + ' '*12  + ' ( Delete clinic history ) ' + ' '*11 + '║')
     print('╚' + '═'*50 + '╝')
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# Definimos una funcion para salir, esta funcion se va a encargar de dejar al usuario en el 'login'
-def is_exist():
-    # Solicitamos la funcion de limpiar pantalla
-    clean_console()
-    # Solicitamos la funcion de login para que nos deje en el 'login' y poder ingresar nuevamente
-    # cuando el usuario ingrese las credenciales correctas
-    login()
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# Definimos una funcion para nuestro 'login'
-def login():
-    while True:
-        # Añadimos algo de decoracion
-        print_header()
-        print('╔' + '═'*50 + '╗')
-        print('║' + ' '*22 + 'LOGIN' + ' '*23 + '║')
-        print('╠' + '═'*50 + '╣')
-        print('║' +  ' '*20 + 'Hello again!' + ' '*18 + '║')
-        print('║' + ' '*5 + 'Please enter the credentials to continue' + ' '*5 + '║')
-        print('╚' + '═'*50 + '╝')
-        # Solicitamos el nombre de usuario y la contraseña
-        print(' Username')
-        username = input(' » ')
-        print(' Password')
-        password = getpass.getpass(' » ')
 
-        # Rcorremos el diccionario donde estan almacenados los datos de los usuarios usando la funcion 'for'
-        for user in user_list:
-            if username == user['username'] and password == user['password']:
-                clean_console()
 
-                # Al ingresar se nos va a mostrar un mensaje de bienvenida con el rol del usuario que ingreso al programa
-                print('═'*52)
-                print(' WELCOME, {}!'.format(user['role']))
-                return user['role']
-        clean_console()
-        # Si los credenciales (usuario o contraseña) son incorrectos nos mostrara un mensaje que lo hara saber
-        print(' '*9 + 'Incorrect credentials, try again')
-        print()
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# Definimos una funcion 'menu' que toma como argumento 'role' para determinar que menu se va a mostrar
-def menu(role):
-    while True:
-        # Si 'role' es igual a 'admin' nos mostrara el menu del administrador (Kameron)
-        if role == 'admin':
-            print_admin_menu()
-            # Creamos una opcion para que el administrador elija lo que desea hacer en su menu
-            admin_option = input(' Select an option: ')
 
-            # La opcion '1' le permite al dministrador crear nuevos usuarios, contraseñas y roles
-            if admin_option == '1':
-                clean_console()
-                action_create_user()
 
-            # La opcion '2' le permite al administrador consultar los datos de los usuarios
-            elif admin_option == '2':
-                clean_console()
-                print_consult_data()
 
-                view_users_option = input(' Select an option: ')
 
-                if view_users_option == '1':
-                    clean_console()
-                    action_find_user()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
 
-                elif view_users_option == '2':
-                    clean_console()
-                    find_all_users()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
 
-                elif view_users_option == '3':
-                    clean_console()
 
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1-3)')
-                    print()
 
-            # La opcion '3' le permite al administrador actualizar los datos de los usuarios
-            elif admin_option == '3':
-                clean_console()
-                update_user()
-                input(' '*8 + 'Press enter to return to the menu: ')
-                clean_console()
 
-            # La opcion '4' le permite al administrador eliminar los datos de los usuarios
-            elif admin_option == '4':
-                clean_console()
-                print_delete_user_menu()
-                delete_user_option = input(' Select an option: ')
 
-                if delete_user_option == '1':
-                    clean_console()
-                    delete_users_data()
-                    
-                elif delete_user_option == '2':
-                    clean_console()
 
-                else:
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-
-            # La opcion '5' le permitre al administrador realizar una copia de seguridad
-            elif admin_option == '5':
-                clean_console()
-                print_backup_menu()
-                backup_option = input(' Select an option: ')
-
-                if backup_option == '1':
-                    clean_console()
-                    make_backup()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif backup_option == '2':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-
-            # La opcion '6' le permite al administrador salir del programa, esta opcion lo deja en el 'login' para que ingrese nuevamente
-            elif admin_option == '6':
-                clean_console()
-                login()
-            # De otro modo si la opcion no esta entre los numeros del 1-6, nos muestra un mensaje para escoger 
-            # una opcion valida entre el rango de estos numeros y nos muestra nuevamente el menu de administrador
-            else:
-                clean_console()
-                print(' '*18 + 'Invalid option')
-                print(' '*8 + 'Please select a valid option (1-6)')
-                print()
-
-#_________________________________________________________________________________________________________________________________________________________________________________#
-        # Si 'role' es igual a 'assitant' nos mostrara el menu del asistente (Kevin)
-        elif role == 'assistant':
-            print_assistant_menu()
-
-            # Creamos una opcion para que el asistente elija lo que desea hacer en su menu
-            assistant_option = input(' Select an option: ')
-
-            # La opcion '1' le permite al asistente agregar los datos de un nuevo paciente
-            if assistant_option == '1':
-                clean_console()
-                add_patient_data_menu()
-                
-                add_patient_option = input(' Select an option: ')
-
-                if add_patient_option == '1':
-                    clean_console()
-                    add_patient_data()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif add_patient_option == '2':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-
-            # La opcion '2' le permite al asistente consultar uno o todos los registros de los pacientes
-            elif assistant_option == '2':
-                clean_console()
-                consult_patient_data()
-                view_patient_option = input(' Select an option: ')
-
-                if view_patient_option == '1':
-                    view_a_patient()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif view_patient_option == '2':
-                    view_all_patient()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif view_patient_option == '3':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1-3)')
-                    print()
-
-            # La opcion '3' le permite al asistente actulizar o modificar los registros de un paciente (Informacion personal)
-            elif assistant_option == '3':
-                clean_console()
-                update_patient_data_menu()
-                update_patient_option = input(' Select an option: ')
-
-                if update_patient_option == '1':
-                    clean_console()
-                    update_patient_data()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif update_patient_option == '2':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-
-            # La opcion '4' le permite al asistente eliminar los datos de un paciente
-            elif assistant_option == '4':
-                clean_console()
-                delete_patient_data_menu()
-                delete_patient_option = input(' Select an option: ')
-
-                if delete_patient_option == '1':
-                    clean_console()
-                    delete_patient_data()
-
-                elif delete_patient_option == '2':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-
-            # La opcion '5' le permite al asistente salir del programa, esta opcion lo deja en el 'login' para que ingrese nuevamente
-            elif assistant_option == '5':
-                clean_console()
-                login()
-
-            # De otro modo si la opcion no esta entre los numeros del 1-5, nos muestra un mensaje para escoger 
-            # una opcion valida entre el rango de estos numeros y nos muestra nuevamente el menu del asistente
-            else:
-                clean_console()
-                print(' '*18 + 'Invalid option')
-                print(' '*8 + 'Please select a valid option (1-5)')
-                print()
-
-#_________________________________________________________________________________________________________________________________________________________________________________#
-        # Si 'role' es igual a 'doc' nos mostrara el menu del doctor o medico (Samuel)
-        elif role == 'doc':
-            print_doctor_menu()
-
-            # Creamos una opcion para que el doctor elija lo que desea hacer en su menu
-            doc_option = input(' Select an option: ')
-
-            if doc_option == '1':
-                clean_console()
-                add_history()
-                input(' '*8 + 'Press enter to return to the menu: ')
-                clean_console()
-
-            # La opcion '2'
-            elif doc_option == '2':
-                clean_console()
-                consult_history()
-                view_history_option = input(' Select an option: ')
-
-                if view_history_option == '1':
-                    clean_console()
-                    view_a_history()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif view_history_option == '2':
-                    clean_console()
-                    view_all_history()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif view_history_option == '3':
-                    clean_console()
-
-                else:
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1-3)')
-                    print()
-
-            elif doc_option == '3':
-                clean_console()
-                update_history_menu()
-                update_history_option = input(' Select an option: ')
-
-                if update_history_option == '1':
-                    clean_console()
-                    update_history()
-                
-                elif update_history_option == '2':
-                    clean_console()
-
-                else:
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
-            
-            elif doc_option == '4':
-                clean_console()
-                delete_history_menu()
-                delete_history_option = input(' Select an option: ')
-
-                if delete_history_option == '1':
-                    clean_console()
-                    delete_history()
-
-                elif delete_history_option == '2':
-                    clean_console()
-
-                else:
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
- 
-            elif doc_option == '5':
-                clean_console()
-                login()
-
-            else:
-                clean_console()
-                print(' '*18 + 'Invalid option.')
-                print(' '*8 + 'Please select a valid option (1-5)')
-                print()
-
-        else:
-            print(' Dont have access to side')
-            print()
-
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# if __name__ == '__main__':
-#     # user_role = login()
-#     user_role = 'admin'
-#     if user_role:
-#         menu(user_role)
 
 # --------------------------------------------------------------------------------
 # BEGIN: AUTHENTICATION MODULE
@@ -1265,6 +1011,8 @@ def print_login_header():
     print('╚' + '═'*50 + '╝')
 
 def log_in():
+    print_header()
+
     username = input('Username: ')
     user = find_user(username)
 
@@ -1303,21 +1051,16 @@ def print_main_menu():
 
 def main_menu():
     print_main_menu()
-    options = {
+    menu_management({
         "1": log_in,
         "2": bye
-    }
-    option = input('Select an option: ')
-    print()
-
-    action = options.get(option)
-    action()
+    })
 
 def execute_menu():
     menus = {
         "admin": admin_menu,
         "assistant": assistant_menu,
-        "doc": bye,
+        "doc": doc_menu,
     }
     user_authenticated = auth_info['user']
     menu = menus.get(user_authenticated['role'])
