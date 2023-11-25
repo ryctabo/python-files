@@ -31,10 +31,20 @@ def clean_console():
 clean_console()
 
 # Definimos una función para decorar el programa con caracteres ascii, para ello usaremos el siguiente encabezado: 'MEDICAL RECORDS MANAGEMENT'
-def header():
+def print_header():
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╚' + '═'*50 + '╝')
+
+
+
+
+
+
+
+
+
+
 
 # -------------------------------------------------------------------
 # HOW TO LOAD AND SAVE DATA IN CSV
@@ -71,20 +81,14 @@ def load_data_from_csv(filename):
 
 
 
-# Creamos una lista vacia para almacenar los datos
-patient_filename = 'patient-data.csv'
-patient_headers = ['Identification', 'Names', 'Surnames', 'Age', 'Gender', 'Address', 'Phone number', 'Health coverage']
-patient_list = load_data_from_csv(patient_filename)
 
-if len(patient_list) == 0:
-    save_data_to_csv(patient_filename, patient_headers, patient_list)
 
-history_filename = 'clinic-history.csv'
-history_headers = ['Symptoms', 'Current illness', 'Medical history', 'Family illnesses', 'Allergies', 'Treatment']
-history_list = load_data_from_csv(history_filename)
 
-if len(patient_list) == 0:
-    save_data_to_csv(history_filename, history_headers, history_list)
+
+
+
+
+
 
 
 
@@ -181,8 +185,8 @@ def find_user(username):
             return user
     return None
 
-def add_users_data():
-    header()        # We request our header
+def print_create_user_header():
+    print_header()        # We request our header
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
     print('╠' + '═'*50 + '╣')
@@ -193,11 +197,14 @@ def add_users_data():
     print('║' + ' '*50 + '║')
     print('║' + '→ Assign a user role (admin, assistant, doc).' + ' '*5 +'║')
     print('╚' + '═'*50 + '╝')
+
+def register_a_new_user():
+    print_create_user_header()
     create_user()
 
 #Definimos una función para consultar los detos de los usuarios
-def consult_users_data():
-    header()
+def print_consult_data():
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*14 + '( Consult user data )' + ' '*15 + '║')
     print('╠' + '═'*50 + '╣')
@@ -206,23 +213,17 @@ def consult_users_data():
     print('║' + '(3) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
 
-def add_users_menu():
-    header()
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create a new user' + ' '*27 + '║')
-    print('║' + '(2) » Back' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
-
-# Definimos una función para consultar los datos de un solo usuario
-def view_a_user():
+def print_find_user():
     clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
     print('║' + ' '*20 + 'Users data' + ' '*20 + '║')
     print('╚' + '═'*50 + '╝')
+
+# Definimos una función para consultar los datos de un solo usuario
+def find_user_by_username():
+    print_find_user()
     username = input(' Enter the username to consult: ')
     user = find_user(username)
 
@@ -232,7 +233,7 @@ def view_a_user():
         print(user)
 
 # Definimos una funcion para consultar todos los usuarios
-def view_all_users():
+def find_all_users():
     clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
@@ -245,7 +246,7 @@ def view_all_users():
         print(user)
     print()
 
-def delete_user_menu():
+def print_delete_user_menu():
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
@@ -255,7 +256,7 @@ def delete_user_menu():
 
 # Modificamos la función delete_users_data para usar la función delete_user_from_csv
 def delete_users_data():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*15  + '  ( Delete users ) ' + ' '*15 + ' ║')
     print('╚' + '═'*50 + '╝')
@@ -298,8 +299,8 @@ def update_user():
     save_data_to_csv(user_filename, user_headers, user_list)
 
 # Definimos una funcion para el menu de hacer una copia de seguridad de datos
-def backup():
-    header()
+def print_backup_menu():
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*16  + ' ( backup ) ' + ' '*16 + ' ║')
     print('╠' + '═'*50 + '╣')
@@ -344,6 +345,80 @@ def make_backup():
 # END: USER MODULE
 # -----------------------------------------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# BEGIN: PATIENT MODULE
+# Creamos una lista vacia para almacenar los datos
+patient_filename = 'patient-data.csv'
+patient_headers = ['Identification', 'Names', 'Surnames', 'Age', 'Gender', 'Address', 'Phone number', 'Health coverage']
+patient_list = load_data_from_csv(patient_filename)
+
+if len(patient_list) == 0:
+    save_data_to_csv(patient_filename, patient_headers, patient_list)
+
+# END: PATIENT MODULE
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# BEGIN: HISTORY MODULE
+history_filename = 'clinic-history.csv'
+history_headers = ['Symptoms', 'Current illness', 'Medical history', 'Family illnesses', 'Allergies', 'Treatment']
+history_list = load_data_from_csv(history_filename)
+
+if len(patient_list) == 0:
+    save_data_to_csv(history_filename, history_headers, history_list)
+
+# END: HISTORY MODULE
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para el menu de administrador
 def admin_menu():
@@ -374,7 +449,7 @@ def assistant_menu():
     print('╚' + '═'*50 + '╝')
 
 def add_patient_data_menu():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*16  + ' ( Patient data ) ' + ' '*16 + '║')
     print('╠' + '═'*50 + '╣')
@@ -384,7 +459,7 @@ def add_patient_data_menu():
 
 # Definimos la funcion para crear o añadir pacientes nuevos
 def add_patient_data():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*16  + ' ( Patient data ) ' + ' '*16 + '║')
     print('╚' + '═'*50 + '╝')
@@ -418,7 +493,7 @@ def add_patient_data():
 
 # Definimos una funcion para consultar los datos de los pacientes
 def consult_patient_data():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*13 + '( Consult patient data )' + ' '*13 + '║')
     print('╠' + '═'*50 + '╣')
@@ -503,7 +578,7 @@ def view_all_patient():
 
 # Definimos una funcion para modificar o actualizar los datos de los pacientes
 def update_patient_data_menu():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11  + '   ( Update patient data ) ' + ' '*11 + ' ║')
     print('╠' + '═'*50 + '╣')
@@ -514,7 +589,7 @@ def update_patient_data_menu():
 # Función para actualizar la información de un paciente
 def update_patient_data():
     clean_console()
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
@@ -599,7 +674,7 @@ def delete_save_data_to_csv():
 # Definimos una funcion para eliminar los datos de los pacientes
 
 def delete_patient_data_menu():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + '  ( Delete patient data ) ' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
@@ -608,7 +683,7 @@ def delete_patient_data_menu():
     print('╚' + '═'*50 + '╝')
 
 def delete_patient_data():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + '  ( Delete patient data ) ' + ' '*12 + '║')
     print('╚' + '═'*50 + '╝')
@@ -631,7 +706,7 @@ history_list = []
 
 # Definimos una funcion para crear la historia clinica de cada paciente
 def add_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*15  + ' ( Clinic history ) ' + ' '*15 + '║')
     print('╚' + '═'*50 + '╝')
@@ -664,7 +739,7 @@ def add_history():
 
 # Definimos una funcion para consultar la historia clinica del paciente
 def consult_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11  + ' ( Consult clinic history ) ' + ' '*11 + '║')
     print('╠' + '═'*50 + '╣')
@@ -674,20 +749,20 @@ def consult_history():
     print('╚' + '═'*50 + '╝')
 
 def view_a_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11  + ' ( Consult clinic history ) ' + ' '*11 + '║')
     print('╚' + '═'*50 + '╝')
 
 def view_all_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11  + ' ( Consult clinic history ) ' + ' '*11 + '║')
     print('╚' + '═'*50 + '╝')
 
 # Definimos una funcion para actualizar o modificar la historia clinica del paciente
 def update_history_menu():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + ' ( Update clinic history ) ' + ' '*11 + '║')
     print('╠' + '═'*50 + '╣')
@@ -696,14 +771,14 @@ def update_history_menu():
     print('╚' + '═'*50 + '╝')
 
 def update_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + ' ( Update clinic history ) ' + ' '*11 + '║')
     print('╚' + '═'*50 + '╝')
 
 # Definimos una funcion para eliminar la historia clinica de un paciente
 def delete_history_menu():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + ' ( Delete clinic history ) ' + ' '*11 + '║')
     print('╠' + '═'*50 + '╣')
@@ -712,7 +787,7 @@ def delete_history_menu():
     print('╚' + '═'*50 + '╝')
 
 def delete_history():
-    header()
+    print_header()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*12  + ' ( Delete clinic history ) ' + ' '*11 + '║')
     print('╚' + '═'*50 + '╝')
@@ -731,7 +806,7 @@ def exit():
 def login():
     while True:
         # Añadimos algo de decoracion
-        header()
+        print_header()
         print('╔' + '═'*50 + '╗')
         print('║' + ' '*22 + 'LOGIN' + ' '*23 + '║')
         print('╠' + '═'*50 + '╣')
@@ -771,40 +846,24 @@ def menu(role):
             # La opcion '1' le permite al dministrador crear nuevos usuarios, contraseñas y roles
             if admin_option == '1':
                 clean_console()
-                add_users_menu()
-                add_user_option = input(' Select an option: ')
-
-                if add_user_option == '1':
-                    clean_console()
-                    add_users_data()
-                    input(' '*8 + 'Press enter to return to the menu: ')
-                    clean_console()
-
-                elif add_user_option == '2':
-                    clean_console()
-
-                else:
-                    clean_console()
-                    print(' '*18 + 'Invalid option')
-                    print(' '*8 + 'Please select a valid option (1 or 2)')
-                    print()
+                register_a_new_user()
 
             # La opcion '2' le permite al administrador consultar los datos de los usuarios
             elif admin_option == '2':
                 clean_console()
-                consult_users_data()
+                print_consult_data()
 
                 view_users_option = input(' Select an option: ')
 
                 if view_users_option == '1':
                     clean_console()
-                    view_a_user()
+                    find_user_by_username()
                     input(' '*8 + 'Press enter to return to the menu: ')
                     clean_console()
 
                 elif view_users_option == '2':
                     clean_console()
-                    view_all_users()
+                    find_all_users()
                     input(' '*8 + 'Press enter to return to the menu: ')
                     clean_console()
 
@@ -827,7 +886,7 @@ def menu(role):
             # La opcion '4' le permite al administrador eliminar los datos de los usuarios
             elif admin_option == '4':
                 clean_console()
-                delete_user_menu()
+                print_delete_user_menu()
                 delete_user_option = input(' Select an option: ')
 
                 if delete_user_option == '1':
@@ -845,7 +904,7 @@ def menu(role):
             # La opcion '5' le permitre al administrador realizar una copia de seguridad
             elif admin_option == '5':
                 clean_console()
-                backup()
+                print_backup_menu()
                 backup_option = input(' Select an option: ')
 
                 if backup_option == '1':
