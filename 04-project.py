@@ -7,14 +7,13 @@
 
                 BY:
 
-    - KAMERON HOLY HERNANDEZ PAUTT
+    - KAMERON JOLY HERNANDEZ PAUTT
     - KEVIN JESUS PACHECO GOMEZ
     - SAMUEL JESUS TORRES PUELLO
 '''
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Importamos todas las bibliotecas que vamos a utilizar en nuestro codigo
-
 import os       # Importamos la biblioteca 'os' para limpiar la pantalla
 import csv      # Importamos la biblioteca 'csv' para trabajar con archivos CSV 
 import shutil   # Importamos la biblioteca 'shutil' para la copia de archivos
@@ -22,7 +21,6 @@ import getpass  # Importamos la biblioteca 'getpass' para ocultar la contraseña
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una funcion para limpiar la pantalla
-
 def clean_console():
     if os.name == 'nt':
         os.system('cls')    # Usamos 'os.system()' para ejecutar el comando 'cls', que borra la pantalla en sistemas Windows
@@ -32,62 +30,158 @@ def clean_console():
 # Solicitamos nuestra funcion para limpiar la pantalla
 clean_console()
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos una función para decorar el programa con caracteres ascii, para ello usaremos el siguiente encabezado: 'MEDICAL RECORDS MANAGEMENT'
 def header():
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╚' + '═'*50 + '╝')
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# Creamos un diccionario con los nombres de usuario, contraseña y el rol que van a desempeñar estos usuarios
-users = [
-    {
-        'username': 'kameronjoly',
-        'password': '1128063099',
-        'role': 'admin'
-    },
-    {
-        'username': 'kevinjesus',
-        'password': '1002191923',
-        'role': 'assistant'
-    },
-    {
-        'username': 'samueljesus',
-        'password': '1043647631',
-        'role': 'doc'
-    }
-]
+# -------------------------------------------------------------------
+# HOW TO LOAD AND SAVE DATA IN CSV
+def save_data_to_csv(filename, headers, data_list):
+    try:
+        with open(filename, 'w', newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, headers)
+            writer.writeheader()
+            writer.writerows(data_list)
 
-#_________________________________________________________________________________________________________________________________________________________________________________#
-# Definimos una funcion para el menu de administrador
-def admin_menu():
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-    print('║' + '-'*19 + ' ADMIN MENU ' + '-'*19 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create a new user' + ' '*27 + '║')
-    print('║' + '(2) » Consult user data' + ' '*27 + '║')
-    print('║' + '(3) » Update user data' + ' '*28 + '║')
-    print('║' + '(4) » Delete users' + ' '*32 + '║')
-    print('║' + '(5) » Data backup'  + ' '*33 + '║')
-    print('║' + '(6) » Exit' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+        print(' Data has been saved successfully!')
+        print('═'*52)
 
-def add_users_menu():
-    header()
-    print('╔' + '═'*50 + '╗')
-    print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
-    print('╠' + '═'*50 + '╣')
-    print('║' + '(1) » Create a new user' + ' '*27 + '║')
-    print('║' + '(2) » Back' + ' '*40 + '║')
-    print('╚' + '═'*50 + '╝')
+    except Exception as e:
+        print(' An error occurred while saving information to the file')
+        print(f' Error {e}')
+        print('═'*52)
 
-new_users = {}  # We create a dictionary for new users
+def load_data_from_csv(filename):
+    try:
+        with open(filename, 'r', newline='') as csv_file:
+            reader = csv.DictReader(csv_file)
+            data_list = []
+            for row in reader:
+                data_list.append(row)
+            return data_list
+    except FileNotFoundError:
+        return []
+    except:
+        print(' An error occurred while reading info from file csv.')
 
-# Definimos la función para crear nuevos usuarios
+# END: HOW TO SAVE AND LOAD DATA FROM CSV
+# -------------------------------------------------------------------
+
+
+
+# Creamos una lista vacia para almacenar los datos
+patient_filename = 'patient-data.csv'
+patient_headers = ['Identification', 'Names', 'Surnames', 'Age', 'Gender', 'Address', 'Phone number', 'Health coverage']
+patient_list = load_data_from_csv(patient_filename)
+
+if len(patient_list) == 0:
+    save_data_to_csv(patient_filename, patient_headers, patient_list)
+
+history_filename = 'clinic-history.csv'
+history_headers = ['Symptoms', 'Current illness', 'Medical history', 'Family illnesses', 'Allergies', 'Treatment']
+history_list = load_data_from_csv(history_filename)
+
+if len(patient_list) == 0:
+    save_data_to_csv(history_filename, history_headers, history_list)
+
+
+
+# -----------------------------------------------------------------------------
+# BEGIN: USER MODULE
+def load_users(): 
+    data = load_data_from_csv(user_filename)
+
+    if len(data) == 0:
+        default_users = [
+            {
+                'username': 'admin',
+                'password': '1234',
+                'role': 'admin'
+            },
+            {
+                'username': 'assistance',
+                'password': '1234',
+                'role': 'assistant'
+            },
+            {
+                'username': 'doc',
+                'password': '1234',
+                'role': 'doc'
+            }
+        ]
+        save_data_to_csv(user_filename, user_headers, default_users)
+        return default_users
+    
+    return data
+
+user_filename = 'user-data.csv'
+user_headers = ['username', 'password', 'role']
+user_list = load_users()
+
+roles_allowed = ['admin', 'assistant', 'doc']
+
+def exists_user(username):
+    for user in user_list:
+        if user['username'] == username:
+            return True
+    return False
+
+def input_username():
+    while True:
+        username = input(' » Username: ')
+        if len(username) > 3:
+            if not exists_user(username):
+                break
+            else:
+                print(f'This username {username} already exists!')
+        else:
+            print("The username is invalid, it's must have greater than 3 characters")
+    return username
+
+def input_password():
+    while True:
+        password = getpass.getpass(' » Password: ')
+        if len(password) == 0:
+            res = input(" The password is empty. it's right? (y/n): ")
+            if res.lower() != 'n':
+                break
+        else:
+            break
+    return password
+    
+def input_role():
+    while True:
+        role = input(' » Role: ')
+        if role in roles_allowed:
+            break
+        else:
+            print('-'*50)
+            print(' Invalid role, please enter a valid role.')
+            print(' Valid roles: ', roles_allowed)
+    return role
+
+def create_user():
+    new_user = {}
+    # Creamos los campos con los que el administrador podrá crear nuevos usuarios
+    new_user['username'] = input_username()
+    new_user['password'] = input_password()
+    new_user['role'] = input_role()
+
+    print('═'*52)
+
+    # Insertamos los nuevos usuarios en la lista
+    user_list.append(new_user)
+    save_data_to_csv(user_filename, user_headers, user_list)
+
+def find_user(username):
+    for user in user_list:
+        if user['username'] == username:
+            return user
+    return None
+
 def add_users_data():
-
     header()        # We request our header
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
@@ -99,46 +193,7 @@ def add_users_data():
     print('║' + ' '*50 + '║')
     print('║' + '→ Assign a user role (admin, assistant, doc).' + ' '*5 +'║')
     print('╚' + '═'*50 + '╝')
-
-    # Usamos 'try' para manejar situaciones excepcionales o errores que puedan ocurrir durante la ejecución de un programa
-    try:
-        # Creamos los campos con los que el administrador podrá crear nuevos usuarios
-        new_users['username'] = input(' » Username: ')
-        new_users['password'] = input(' » Password: ')
-        new_users['role'] = input(' » Role: ')
-        print('═'*52)
-
-        # Insertamos los nuevos usuarios en la lista
-        users.append(new_users)
-
-    # En caso de que se produzca algún error nos mostrará este mensaje
-    except Exception as e:
-        print(f' Error: {e}')
-        print(' Please try again')
-        print('═'*52)
-
-    # Solicitamos nuestra función para guardar a los usuarios en el archivo csv
-    save_users_to_csv()
-
-# Definimos una función para guardar usuarios en un archivo CSV
-# Modifica la función save_users_to_csv() de la siguiente manera:
-def save_users_to_csv():
-    try:
-        filename_users = 'user-data.csv'
-        with open(filename_users, 'w', newline='') as user_file_csv:  # Cambia 'a' a 'w'
-            fieldnames = ['username', 'password', 'role']
-            writer = csv.DictWriter(user_file_csv, fieldnames)
-
-            writer.writeheader()
-            writer.writerows(users)  # Utiliza writerows para escribir la lista completa de usuarios
-
-        print(f'User data saved to {filename_users} successfully')
-        print('═'*52)
-
-    except Exception as e:
-        print(f'Error: {e}')
-        print('Unable to save user data to CSV')
-        print('═'*52)
+    create_user()
 
 #Definimos una función para consultar los detos de los usuarios
 def consult_users_data():
@@ -151,6 +206,15 @@ def consult_users_data():
     print('║' + '(3) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
 
+def add_users_menu():
+    header()
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*14 + '  ( Create new user ) ' + ' '*14 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + '(1) » Create a new user' + ' '*27 + '║')
+    print('║' + '(2) » Back' + ' '*40 + '║')
+    print('╚' + '═'*50 + '╝')
+
 # Definimos una función para consultar los datos de un solo usuario
 def view_a_user():
     clean_console()
@@ -160,94 +224,26 @@ def view_a_user():
     print('║' + ' '*20 + 'Users data' + ' '*20 + '║')
     print('╚' + '═'*50 + '╝')
     username = input(' Enter the username to consult: ')
+    user = find_user(username)
 
-    try:
-        filename_users = 'user-data.csv'
-        with open(filename_users, 'r', newline='') as user_file_csv:
-            reader = csv.DictReader(user_file_csv)
-            user_found = False   # Variable para rastrear si se encuentra al usuario
-
-            for row in reader:
-                if row['username'] == username:
-                    user_found = True    # Marcamos que el usuario fue encontrado
-                    print()
-                    print('╔' + '═'*50 + '╗')
-                    print(' '*15 + f'User {username} found' + ' '*14 )
-                    print('╚' + '═'*50 + '╝')
-
-                    for key, value in row.items():
-                        print(f' {key}: {value}')
-                    break   # Rompemos el ciclo una vez que se encuentra al usuario
-
-            if not user_found:
-                    print('╔' + '═'*50 + '╗')
-                    print(' '*13 + f'User {username} not found' + ' '*12 )  # Mensaje en caso de que no se encuentre el usuario
-                    print('╚' + '═'*50 + '╝')  
-        print('═'*52)
-
-    except Exception as e:
-                print('\t'*9 + ' '*5 + ' An error ocurred while reading information from the file')
-                print('═'*52)
+    if user == None:
+        print(f' User with username {username} was not found.')
+    else:
+        print(user)
 
 # Definimos una funcion para consultar todos los usuarios
 def view_all_users():
-    try:
-        filename_users = 'user-data.csv'
-        with open(filename_users, 'r', newline='') as user_file_csv:
-            reader = csv.DictReader(user_file_csv)
-
-            # Agregamos algo de decoracion
-            clean_console()
-            print('╔' + '═'*50 + '╗')
-            print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
-            print('╠' + '═'*50 + '╣')
-            print('║' + ' '*20 + 'Users data' + ' '*20 + '║')
-            print('╚' + '═'*50 + '╝')
-            print()
-
-            # Iteramos los elementos del diccionario
-            # Se imprimen los registros
-            for row in reader:
-                for key, value in row.items():
-                    print(' ' + key, value)
-                print()
-        print('═'*52)
-
-    except Exception as e:
-        print('\t'*9 + ' '*5 + ' An error ocurred while reading information form the file')
-        print('═'*52)
-
-# Definimos la función para cambiar los credenciales del usuario
-def change_credentials():
     clean_console()
     print('╔' + '═'*50 + '╗')
     print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
     print('╠' + '═'*50 + '╣')
-    print('║' + ' '*14 + '( Change Credentials )' + ' '*14 + '║')
+    print('║' + ' '*20 + 'Users data' + ' '*20 + '║')
     print('╚' + '═'*50 + '╝')
+    print()
 
-    username = input(' Enter your current username: ')
-    password = getpass.getpass(' Enter your current password: ')
-
-    user_found = False
-    for user in users:
-        if user['username'] == username and user['password'] == password:
-            user_found = True
-
-            new_username = input(' Enter your new username: ')
-            new_password = getpass.getpass(' Enter your new password: ')
-
-            user['username'] = new_username
-            user['password'] = new_password
-
-            print(' Your credentials have been updated successfully')
-            print('═'*52)
-            save_users_to_csv()
-            break
-
-    if not user_found:
-        print(' Incorrect username or password. Please try again')
-        print('═'*52)
+    for user in user_list:
+        print(user)
+    print()
 
 def delete_user_menu():
     print('╔' + '═'*50 + '╗')
@@ -256,38 +252,6 @@ def delete_user_menu():
     print('║' + '(1) » Delete user data' + ' '*28 + '║')
     print('║' + '(2) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
-
-# Definimos una función para eliminar usuarios del archivo CSV
-def delete_user_from_csv(username):
-    try:
-        filename_users = 'user-data.csv'
-        temp_filename = 'temp-user-data.csv'
-
-        with open(filename_users, 'r', newline='') as user_file_csv, \
-             open(temp_filename, 'w', newline='') as temp_file_csv:
-
-            fieldnames = ['username', 'password', 'role']
-            reader = csv.DictReader(user_file_csv)
-            writer = csv.DictWriter(temp_file_csv, fieldnames)
-
-            # Escribimos el encabezado en el nuevo archivo
-            writer.writeheader()
-
-            # Copiamos todos los usuarios excepto el que queremos eliminar al nuevo archivo
-            for row in reader:
-                if row['username'] != username:
-                    writer.writerow(row)
-
-        # Reemplazamos el archivo original con el nuevo archivo
-        shutil.move(temp_filename, filename_users)
-
-        print(f' User {username} deleted successfully from {filename_users}')
-        print('═'*52)
-
-    except Exception as e:
-        print(f' Error {e}')
-        print(' Unable to delete user from CSV')
-        print('═'*52)
 
 # Modificamos la función delete_users_data para usar la función delete_user_from_csv
 def delete_users_data():
@@ -298,24 +262,46 @@ def delete_users_data():
     print(' Enter username to delete')
     username_to_delete = input(' » ')
 
-    user_found = False
-    for user in users:
-        if user['username'] == username_to_delete:
-            users.remove(user)
-            user_found = True
-            break
+    user_to_delete = find_user(username_to_delete)
 
-    if user_found:
-        delete_user_from_csv(username_to_delete)
+    if user_to_delete == None:
+        print(f' User with {username_to_delete} was not found')
     else:
-        print(f' User {username_to_delete} not found')
-        print('═'*52)
+        user_list.remove(user_to_delete)
+        save_data_to_csv(user_filename, user_headers, user_list)
+
+        print(' User has been deleted successfuly!')
+
+# Definimos la función para cambiar los credenciales del usuario
+def update_user():
+    clean_console()
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + ' '*14 + '( Change Credentials )' + ' '*14 + '║')
+    print('╚' + '═'*50 + '╝')
+
+    username = input(' Enter your current username: ')
+    user = find_user(username)
+
+    if user == None:
+        print(f'User with username {username} was not found.')
+
+    change_username = input(' Do you want to change username? (y/n) default => no: ')
+    if change_username.lower() == 'y':
+        user['username'] = input_username()
+    
+    change_password = input(' Do you want to change password? (y/n) default => no: ')
+    if (change_password.lower() == 'y'):
+        user['password'] = input_password()
+
+    save_data_to_csv(user_filename, user_headers, user_list)
 
 # Definimos una funcion para el menu de hacer una copia de seguridad de datos
 def backup():
     header()
     print('╔' + '═'*50 + '╗')
-    print('║' + ' '*16  + ' ( Data backup ) ' + ' '*16 + ' ║')
+    print('║' + ' '*16  + ' ( backup ) ' + ' '*16 + ' ║')
     print('╠' + '═'*50 + '╣')
     print('║' + '(1) » Make backup' + ' '*33 + '║')
     print('║' + '(2) » Back' + ' '*40 + '║')
@@ -327,7 +313,7 @@ def make_backup():
         print('╔' + '═'*50 + '╗')
         print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
         print('╠' + '═'*50 + '╣')
-        print('║' + ' '*16  + ' ( Data backup ) ' + ' '*16 + ' ║')
+        print('║' + ' '*16  + ' ( backup ) ' + ' '*16 + ' ║')
         print('╚' + '═'*50 + '╝')
 
         print(' Enter the source path of the CSV file')
@@ -355,6 +341,24 @@ def make_backup():
         print(f' {e}')
         print('═'*52)
 
+# END: USER MODULE
+# -----------------------------------------------------------------------------
+
+#_________________________________________________________________________________________________________________________________________________________________________________#
+# Definimos una funcion para el menu de administrador
+def admin_menu():
+    print('╔' + '═'*50 + '╗')
+    print('║' + ' '*11 + ' MEDICAL RECORDS MANAGEMENT' + ' '*12 + '║')
+    print('║' + '-'*19 + ' ADMIN MENU ' + '-'*19 + '║')
+    print('╠' + '═'*50 + '╣')
+    print('║' + '(1) » Create a new user' + ' '*27 + '║')
+    print('║' + '(2) » Consult user data' + ' '*27 + '║')
+    print('║' + '(3) » Update user data' + ' '*28 + '║')
+    print('║' + '(4) » Delete users' + ' '*32 + '║')
+    print('║' + '(5) » Data backup'  + ' '*33 + '║')
+    print('║' + '(6) » Exit' + ' '*40 + '║')
+    print('╚' + '═'*50 + '╝')
+
 #_________________________________________________________________________________________________________________________________________________________________________________#
 # Definimos la funcion del menu de asistente
 def assistant_menu():
@@ -377,9 +381,6 @@ def add_patient_data_menu():
     print('║' + '(1) » Create new patient record' + ' '*19 + '║')
     print('║' + '(2) » Back' + ' '*40 + '║')
     print('╚' + '═'*50 + '╝')
-
-# Creamos una lista vacia para almacenar los datos
-data_list = []
 
 # Definimos la funcion para crear o añadir pacientes nuevos
 def add_patient_data():
@@ -410,33 +411,10 @@ def add_patient_data():
     }
 
     # Insertamos el diccionario dentro de la lista 'data_list' para poder guardar multiples registros
-    data_list.append(data)
+    patient_list.append(data)
     save_data_to_csv()
 
-# Definimos una funcion para guardar los datos en un archivo CSV
-def save_data_to_csv():
-    try:
-        filename = 'patient-data.csv'
-        with open(filename, 'a', newline='') as csv_file:
-            columns = ['Identification', 'Names', 'Surnames', 'Age', 'Gender', 'Address', 'Phone number', 'Health coverage']
-            writer = csv.DictWriter(csv_file, columns)
 
-            # Si el archivo esta vacio, se escribira la cabecera o encabezado
-            if csv_file.tell() == 0:
-                writer.writeheader()
-
-            for data in data_list:
-                writer.writerow(data)
-
-        # Cuando el archivo se guarde correctamente nos mostrara este mensaje:
-        print(f'\t'*10 +' The patient has been saved perfectly in the file')
-        print('═'*52)
-
-    except Exception as e:
-        # Si el archivo no se guarda correctamente o existe algun error, se mostrar este mensaje:
-        print(' An error occurred while saving information to the file')
-        print(f' Error {e}')
-        print('═'*52)
 
 # Definimos una funcion para consultar los datos de los pacientes
 def consult_patient_data():
@@ -586,18 +564,6 @@ def update_patient_data():
         print('\t'*9 + ' '*5 + f' An error occurred while updating patient information: {e}')
         print('═'*52)
 
-# Función para cargar datos desde el archivo CSV al inicio del programa
-def load_data_from_csv():
-    try:
-        filename = 'patient-data.csv'
-        with open(filename, 'r', newline='') as csv_file:
-            reader = csv.DictReader(csv_file)
-            for row in reader:
-                data_list.append(row)
-    except FileNotFoundError:
-        # Si el archivo no existe, se crea vacío
-        pass
-
 # Función para actualizar la información de un paciente
 def update_patient_data():
     print('╔' + '═'*50 + '╗')
@@ -617,7 +583,7 @@ def delete_save_data_to_csv():
             writer.writeheader()
 
             # Escribir todos los datos en la lista
-            for data in data_list:
+            for data in patient_list:
                 writer.writerow(data)
 
         # Cuando el archivo se guarde correctamente, mostrar este mensaje:
@@ -687,36 +653,14 @@ def add_history():
     }
 
     history_list.append(clinic_history)
-    save_history_data_to_csv()
+    save_data_to_csv(history_filename, history_headers, history_list)
 
 # Definimos una funcion para guardar los datos en el archivo csv
 
-history_list = []
 
 # Definimos una función para crear la historia clínica de cada paciente
 
-# Definimos una función para guardar los datos en el archivo CSV
-def save_history_data_to_csv():
-    try:
-        clinic_history_file = 'clinic-history.csv'
-        with open(clinic_history_file, 'a', newline='') as file:
-            line = ['Symptoms', 'Current illness', 'Medical history', 'Family illnesses', 'Allergies', 'Treatment']
-            writer = csv.DictWriter(file, fieldnames=line)
 
-            if file.tell() == 0:
-                writer.writeheader()
-
-            for clinic_history in history_list:
-                writer.writerow(clinic_history)
-
-        # Cuando el archivo se guarde correctamente nos mostrará este mensaje:
-        print(f' The history has been saved perfectly in the file')
-        print('═'*52)
-
-    except Exception as e:
-        # Si el archivo no se guarda correctamente o existe algún error, se mostrará este mensaje:
-        print(f'An error occurred while saving history to the file')
-        print('═'*52)
 
 # Definimos una funcion para consultar la historia clinica del paciente
 def consult_history():
@@ -801,7 +745,7 @@ def login():
         password = getpass.getpass(' » ')
 
         # Rcorremos el diccionario donde estan almacenados los datos de los usuarios usando la funcion 'for'
-        for user in users:
+        for user in user_list:
             if username == user['username'] and password == user['password']:
                 clean_console()
 
@@ -876,7 +820,7 @@ def menu(role):
             # La opcion '3' le permite al administrador actualizar los datos de los usuarios
             elif admin_option == '3':
                 clean_console()
-                change_credentials()
+                update_user()
                 input(' '*8 + 'Press enter to return to the menu: ')
                 clean_console()
 
@@ -1129,6 +1073,7 @@ def menu(role):
 
 #_________________________________________________________________________________________________________________________________________________________________________________#
 if __name__ == '__main__':
-    user_role = login()
+    # user_role = login()
+    user_role = 'admin'
     if user_role:
         menu(user_role)
